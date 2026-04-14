@@ -11,20 +11,25 @@ router.post('/signup', async (req, res) => {
   }
 
   try {
+    console.log('Signup attempt for:', email);
     const existing = await User.findOne({ email });
+    console.log('Existing check done:', !!existing);
     if (existing) {
       return res.status(409).json({ message: 'Email already in use' });
     }
 
+    console.log('Creating user...');
     const user = await User.create({ name, email, password });
+    console.log('User created:', user._id);
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
+    console.log('Token signed');
 
     res.status(201).json({
       token,
       user: { _id: user._id, name: user.name, email: user.email },
     });
   } catch (err) {
-    console.error('Signup error:', err);
+    console.error('Signup error:', err.message, err.stack);
     res.status(500).json({ message: 'Server error during signup' });
   }
 });
