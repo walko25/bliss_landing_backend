@@ -1,20 +1,12 @@
-const nodemailer = require('nodemailer');
+const { Resend } = require('resend');
 
-const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  port: 587,
-  secure: false,
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-});
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 async function sendPasswordResetEmail(toEmail, resetToken) {
   const resetUrl = `https://blisslandingbc.com/reset-password?token=${resetToken}`;
 
-  await transporter.sendMail({
-    from: `"Bliss Landing" <${process.env.EMAIL_USER}>`,
+  await resend.emails.send({
+    from: 'Bliss Landing <noreply@blisslandingbc.com>',
     to: toEmail,
     subject: 'Reset your Bliss Landing password',
     html: `
