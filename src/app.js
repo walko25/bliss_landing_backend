@@ -5,6 +5,8 @@ const cors = require('cors');
 
 const authRouter = require('./routes/auth');
 const postsRouter = require('./routes/posts');
+const sightingsRouter = require('./routes/sightings');
+const reservationsRouter = require('./routes/reservations');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -19,6 +21,8 @@ app.use(express.json());
 
 app.use('/auth', authRouter);
 app.use('/posts', postsRouter);
+app.use('/sightings', sightingsRouter);
+app.use('/reservations', reservationsRouter);
 
 app.use((err, req, res, next) => {
   const status = err.status || 500;
