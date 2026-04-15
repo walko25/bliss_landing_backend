@@ -2,7 +2,7 @@ const router = require('express').Router();
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const User = require('../models/User');
-const { sendPasswordResetEmail } = require('../utils/email');
+const { sendPasswordResetEmail, sendWelcomeEmail } = require('../utils/email');
 
 // POST /auth/signup
 router.post('/signup', async (req, res) => {
@@ -30,6 +30,11 @@ router.post('/signup', async (req, res) => {
       token,
       user: { _id: user._id, name: user.name, email: user.email },
     });
+
+    // Send welcome email after responding so it doesn't delay signup
+    sendWelcomeEmail(email, user.name).catch((err) =>
+      console.error('Welcome email error:', err.message)
+    );
   } catch (err) {
     console.error('Signup error:', err.message, err.stack);
     res.status(500).json({ message: 'Server error during signup' });
